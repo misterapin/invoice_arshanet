@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice - ARSHANET PRINTING (Setengah A4)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0f4f8;
+      padding: 20px;
+      margin: 0;
+      color: #333;
+    }
+
+    /* Ukuran Setengah A4 (A5 Landscape: 210mm x 148mm) */
+    .invoice-card {
+      width: 210mm;
+      min-height: 145mm;
+      margin: auto;
+      background: #ffffff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    /* Action Bar */
+    .action-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 12px;
+      width: 210mm;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      color: white;
+      box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    /* Header Section */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .brand-section {
+      width: 58%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .brand-header-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .brand-logo {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-name {
+      font-size: 22px;
+      font-weight: 900;
+      color: #0284c7;
+      letter-spacing: -0.5px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .address {
+      font-size: 9.5px;
+      color: #64748b;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .tag {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 1px 5px;
+      border-radius: 8px;
+      font-size: 8.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    /* Info Customer */
+    .customer-info {
+      width: 39%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .badge-invoice {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .input-field-group {
+      display: flex;
+      align-items: center;
+      font-size: 10.5px;
+    }
+
+    .input-field-group label {
+      width: 70px;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .modern-input {
+      border: none;
+      border-bottom: 1px dotted #cbd5e1;
+      outline: none;
+      padding: 1px 4px;
+      width: 100%;
+      font-size: 10.5px;
+      background: transparent;
+    }
+
+    /* Tabel Invoice */
+    .table-container {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+    }
+
+    th {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      padding: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 9px;
+    }
+
+    td {
+      padding: 3px 5px;
+      border-bottom: 1px solid #f1f5f9;
+      border-right: 1px solid #f1f5f9;
+      text-align: center;
+    }
+
+    td:last-child {
+      border-right: none;
+    }
+
+    .table-input {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 2px 4px;
+      font-size: 10px;
+      outline: none;
+      background: #f8fafc;
+    }
+
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+
+    .notes-sec {
+      text-align: left;
+      font-size: 8px;
+      color: #64748b;
+      line-height: 1.3;
+      padding: 6px !important;
+      background: #fafafa;
+    }
+
+    .summary-label {
+      font-weight: 700;
+      color: #1e293b;
+      font-size: 10px;
+    }
+
+    .summary-val {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 10px;
+    }
+
+    /* Signatures */
+    .footer-signatures {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      padding: 0 5px;
+    }
+
+    .dates-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 10px;
+    }
+
+    .sig-box {
+      text-align: center;
+      width: 130px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .sig-logo {
+      height: 35px;
+      width: auto;
+      margin: 2px 0;
+    }
+
+    /* Pengaturan Cetak A5 Landscape */
+    @page {
+      size: A5 landscape;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .invoice-card {
+        box-shadow: none;
+        padding: 10mm;
+        width: 100%;
+        border-radius: 0;
+      }
+      .table-input {
+        border: none;
+        background: transparent;
+        padding: 0;
+      }
+      .modern-input {
+        border-bottom: 1px dotted #000;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tombol Aksi -->
+  <div class="action-bar no-print">
+    <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+    <button class="btn btn-success" onclick="kirimWhatsApp()">Kirim WhatsApp</button>
+    <button class="btn btn-primary" onclick="window.print()">Cetak / Simpan PDF</button>
+  </div>
+
+  <div class="invoice-card">
+    <!-- Header -->
+    <div class="header">
+      <div class="brand-section">
+        <div class="brand-header-inline">
+          <img src="logo.jpg" alt="Logo" class="brand-logo">
+          <span class="brand-name">ARSHANET PRINTING</span>
+        </div>
+        <div class="address">
+          📍 Desa Karangjambu - Klp 03 RT 03 RW 03 Kec. Balapulang - Kab. Tegal<br>
+          📞 Telp./HP : 0852 0121 4267
+        </div>
+        <div class="service-tags">
+          <span class="tag">Banner/Spanduk</span>
+          <span class="tag">Stiker Vynil</span>
+          <span class="tag">Kalender</span>
+          <span class="tag">Jersey Custom</span>
+          <span class="tag">ID Card</span>
+          <span class="tag">Kartu Nama</span>
+          <span class="tag">Nota NCR</span>
+          <span class="tag">Kaos Sablon</span>
+          <span class="tag">Brosur</span>
+          <span class="tag">Undangan</span>
+          <span class="tag">BPJS/NPWP Card</span>
+          <span class="tag">Stempel</span>
+          <span class="tag">Stiker Cutting</span>
+          <span class="tag">Dan Lain - lain</span>
+        </div>
+      </div>
+
+      <div class="customer-info">
+        <div class="badge-invoice">INVOICE</div>
+        <div class="input-field-group">
+          <label>Tanggal</label> : 
+          <input type="date" id="input-tgl" class="modern-input">
+        </div>
+        <div class="input-field-group">
+          <label>Nama</label> : 
+          <input type="text" id="input-nama" class="modern-input">
+        </div>
+        <div class="input-field-group">
+          <label>Alamat</label> : 
+          <input type="text" id="input-alamat" class="modern-input">
+        </div>
+        <div class="input-field-group">
+          <label>No. HP</label> : 
+          <input type="text" id="input-hp" class="modern-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabel -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th width="5%">NO</th>
+            <th width="12%">QTY</th>
+            <th width="45%">NAMA BARANG</th>
+            <th width="18%">HARGA SATUAN</th>
+            <th width="20%">HARGA (Rp)</th>
+          </tr>
+        </thead>
+        <tbody id="item-list">
+          <script>
+            for(let i=1; i<=5; i++) {
+              document.write(`
+                <tr>
+                  <td>${i}</td>
+                  <td><input type="number" class="table-input qty" oninput="hitungRow(${i})"></td>
+                  <td><input type="text" class="table-input text-left barang"></td>
+                  <td><input type="number" class="table-input harga" oninput="hitungRow(${i})"></td>
+                  <td class="text-right summary-val subtotal">0</td>
+                </tr>
+              `);
+            }
+          </script>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" rowspan="3" class="notes-sec">
+              <b>Catatan :</b><br>
+              1. Periksa kembali File Sebelum Cetak, Kesalahan Setelah Cetak Bukan Tanggung Jawab Kami<br>
+              2. Wajib DP min 50% dari Total Biaya Cetak<br>
+              3. 1 bulan barang tidak diambil, bukan tanggung jawab kami<br>
+              4. Pembayaran SAH apabila menunjukkan bukti transfer
+            </td>
+            <td class="text-right summary-label">TOTAL (Rp)</td>
+            <td class="text-right summary-val" id="grand-total">0</td>
+          </tr>
+          <tr>
+            <td class="text-right summary-label">DP (Rp)</td>
+            <td><input type="number" id="dp" class="table-input" oninput="hitungSisa()"></td>
+          </tr>
+          <tr>
+            <td class="text-right summary-label">SISA (Rp)</td>
+            <td class="text-right summary-val" id="sisa" style="color: #e11d48;">0</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Tanda Tangan -->
+    <div class="footer-signatures">
+      <div class="dates-inputs">
+        <div class="input-field-group">
+          <label style="width:60px">Terima tgl</label> : 
+          <input type="date" id="input-tgl-terima" class="modern-input" style="width: 100px;">
+        </div>
+        <div class="input-field-group">
+          <label style="width:60px">Selesai tgl</label> : 
+          <input type="date" id="input-tgl-selesai" class="modern-input" style="width: 100px;">
+        </div>
+      </div>
+
+      <div class="sig-box">
+        Hormat Kami,
+        <div>
+          <img src="logo.jpg" alt="Stempel Logo" class="sig-logo">
+        </div>
+        ( <u>ARSHANET PRINTING</u> )
+      </div>
+
+      <div class="sig-box">
+        Penerima,
+        <div style="height: 38px;"></div>
+        ( .................................... )
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function hitungRow(rowIdx) {
+      const rows = document.querySelectorAll('#item-list tr');
+      const targetRow = rows[rowIdx - 1];
+      const qty = parseFloat(targetRow.querySelector('.qty').value) || 0;
+      const harga = parseFloat(targetRow.querySelector('.harga').value) || 0;
+      const subtotal = qty * harga;
+      
+      targetRow.querySelector('.subtotal').innerText = subtotal.toLocaleString('id-ID');
+      hitungTotal();
+    }
+
+    function hitungTotal() {
+      let grandTotal = 0;
+      document.querySelectorAll('.subtotal').forEach(span => {
+        const val = parseFloat(span.innerText.replace(/\./g, '')) || 0;
+        grandTotal += val;
+      });
+      document.getElementById('grand-total').innerText = grandTotal.toLocaleString('id-ID');
+      hitungSisa();
+    }
+
+    function hitungSisa() {
+      const grandTotal = parseFloat(document.getElementById('grand-total').innerText.replace(/\./g, '')) || 0;
+      const dp = parseFloat(document.getElementById('dp').value) || 0;
+      const sisa = grandTotal - dp;
+      document.getElementById('sisa').innerText = sisa.toLocaleString('id-ID');
+    }
+
+    function resetForm() {
+      document.querySelectorAll('input').forEach(input => input.value = '');
+      document.querySelectorAll('.subtotal').forEach(span => span.innerText = '0');
+      document.getElementById('grand-total').innerText = '0';
+      document.getElementById('sisa').innerText = '0';
+    }
+
+    function kirimWhatsApp() {
+      const nama = document.getElementById('input-nama').value || 'Pelanggan';
+      const noHp = document.getElementById('input-hp').value;
+      const tanggal = document.getElementById('input-tgl').value || '-';
+      const grandTotal = document.getElementById('grand-total').innerText;
+      const dp = document.getElementById('dp').value || '0';
+      const sisa = document.getElementById('sisa').innerText;
+
+      if (!noHp) {
+        alert('Mohon isi nomor HP/WhatsApp pelanggan terlebih dahulu!');
+        return;
+      }
+
+      let formatHp = noHp.trim();
+      if (formatHp.startsWith('0')) {
+        formatHp = '62' + formatHp.slice(1);
+      }
+
+      let rincianBarang = '';
+      const rows = document.querySelectorAll('#item-list tr');
+      let nomorItem = 1;
+
+      rows.forEach(row => {
+        const qty = row.querySelector('.qty').value;
+        const namaBarang = row.querySelector('.barang').value;
+        const hargaSatuan = row.querySelector('.harga').value;
+        const subtotal = row.querySelector('.subtotal').innerText;
+
+        if (namaBarang && qty) {
+          rincianBarang += `${nomorItem}. ${namaBarang} (${qty}x @${parseInt(hargaSatuan).toLocaleString('id-ID')}) = Rp ${subtotal}\n`;
+          nomorItem++;
+        }
+      });
+
+      if (rincianBarang === '') {
+        rincianBarang = '- (Belum ada barang diisi)\n';
+      }
+
+      const pesan = `Halo *${nama}*,\nTerima kasih telah memesan di *ARSHANET PRINTING*.\n\nBerikut adalah rincian Nota / Invoice Anda:\nTanggal: ${tanggal}\n\n*Rincian Pesanan:*\n${rincianBarang}\n-----------------------------------\n*TOTAL : Rp ${grandTotal}*\n*DP : Rp ${parseInt(dp).toLocaleString('id-ID')}*\n*SISA : Rp ${sisa}*\n-----------------------------------\n\nCatatan:\n- Wajib DP min 50%\n- 1 bulan barang tidak diambil bukan tanggung jawab kami.\n\nSilakan konfirmasi jika ada yang ditanyakan. Terima kasih!`;
+
+      const urlWa = `https://wa.me/${formatHp}?text=${encodeURIComponent(pesan)}`;
+      window.open(urlWa, '_blank');
+    }
+  </script>
+
+</body>
+</html>
