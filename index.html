@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice - ARSHANET PRINTING (Setengah A4)</title>
+  <title>Invoice - ARSHANET PRINTING</title>
   <style>
     * {
       box-sizing: border-box;
@@ -60,6 +60,12 @@
       background: linear-gradient(135deg, #22c55e, #15803d);
       color: white;
       box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
     }
 
     .btn-secondary {
@@ -302,6 +308,7 @@
 
   <!-- Tombol Aksi -->
   <div class="action-bar no-print">
+    <button class="btn btn-warning" onclick="tambahBaris()">+ Tambah Baris</button>
     <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
     <button class="btn btn-success" onclick="kirimWhatsApp()">Kirim WhatsApp</button>
     <button class="btn btn-primary" onclick="window.print()">Cetak / Simpan PDF</button>
@@ -320,6 +327,7 @@
           📞 Telp./HP : 0852 0121 4267
         </div>
         <div class="service-tags">
+        <div class="service-tags">
           <span class="tag">Banner/Spanduk</span>
           <span class="tag">Stiker Vynil</span>
           <span class="tag">Kalender</span>
@@ -334,6 +342,7 @@
           <span class="tag">Stempel</span>
           <span class="tag">Stiker Cutting</span>
           <span class="tag">Dan Lain - lain</span>
+        </div>
         </div>
       </div>
 
@@ -371,19 +380,7 @@
           </tr>
         </thead>
         <tbody id="item-list">
-          <script>
-            for(let i=1; i<=5; i++) {
-              document.write(`
-                <tr>
-                  <td>${i}</td>
-                  <td><input type="number" class="table-input qty" oninput="hitungRow(${i})"></td>
-                  <td><input type="text" class="table-input text-left barang"></td>
-                  <td><input type="number" class="table-input harga" oninput="hitungRow(${i})"></td>
-                  <td class="text-right summary-val subtotal">0</td>
-                </tr>
-              `);
-            }
-          </script>
+          <!-- Baris akan di-generate via JavaScript -->
         </tbody>
         <tfoot>
           <tr>
@@ -439,23 +436,45 @@
   </div>
 
   <script>
-    function hitungRow(rowIdx) {
-      const rows = document.querySelectorAll('#item-list tr');
-      const targetRow = rows[rowIdx - 1];
-      const qty = parseFloat(targetRow.querySelector('.qty').value) || 0;
-      const harga = parseFloat(targetRow.querySelector('.harga').value) || 0;
-      const subtotal = qty * harga;
+    // Fungsi untuk membuat baris baru secara dinamis
+    function tambahBaris() {
+      const tbody = document.getElementById('item-list');
+      const rowCount = tbody.rows.length + 1;
       
-      targetRow.querySelector('.subtotal').innerText = subtotal.toLocaleString('id-ID');
-      hitungTotal();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${rowCount}</td>
+        <td><input type="number" class="table-input qty" oninput="hitungTotal()"></td>
+        <td><input type="text" class="table-input text-left barang"></td>
+        <td><input type="number" class="table-input harga" oninput="hitungTotal()"></td>
+        <td class="text-right summary-val subtotal">0</td>
+      `;
+      tbody.appendChild(tr);
     }
 
+    // Inisialisasi awal 5 baris
+    window.onload = function() {
+      for(let i=0; i<5; i++) {
+        tambahBaris();
+      }
+    };
+
     function hitungTotal() {
+      const rows = document.querySelectorAll('#item-list tr');
       let grandTotal = 0;
-      document.querySelectorAll('.subtotal').forEach(span => {
-        const val = parseFloat(span.innerText.replace(/\./g, '')) || 0;
-        grandTotal += val;
+
+      rows.forEach((row, index) => {
+        // Update nomor urut otomatis jika baris bertambah
+        row.cells[0].innerText = index + 1;
+
+        const qty = parseFloat(row.querySelector('.qty').value) || 0;
+        const harga = parseFloat(row.querySelector('.harga').value) || 0;
+        const subtotal = qty * harga;
+
+        row.querySelector('.subtotal').innerText = subtotal.toLocaleString('id-ID');
+        grandTotal += subtotal;
       });
+
       document.getElementById('grand-total').innerText = grandTotal.toLocaleString('id-ID');
       hitungSisa();
     }
@@ -469,7 +488,12 @@
 
     function resetForm() {
       document.querySelectorAll('input').forEach(input => input.value = '');
-      document.querySelectorAll('.subtotal').forEach(span => span.innerText = '0');
+      // Reset tabel kembali ke 5 baris kosong
+      const tbody = document.getElementById('item-list');
+      tbody.innerHTML = '';
+      for(let i=0; i<5; i++) {
+        tambahBaris();
+      }
       document.getElementById('grand-total').innerText = '0';
       document.getElementById('sisa').innerText = '0';
     }
